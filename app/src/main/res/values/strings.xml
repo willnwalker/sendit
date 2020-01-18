@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">SendIt</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="app_description">The free alternative to iClicker and Top Hat. To get started, log in with your UCSC email.</string>
+    <string name="app_name_long">SendIt Polling</string>
+    <string name="app_functionality_description">‣Instructors can create classes and students can enroll using permission codes   \n\n  ‣Students are able to answer in-class questions and polls through the student dashboard  \n\n   ‣Classroom attendance will be recorded automatically</string>
 </resources>
