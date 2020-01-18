@@ -6,6 +6,8 @@ import android.view.View
 import android.widget.Button
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -17,6 +19,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mGoogleSignInOptions: GoogleSignInOptions
     private lateinit var mGoogleSignInClient: GoogleSignInClient
     private lateinit var mFirebaseAuth: FirebaseAuth
+
+    private var layoutManager: RecyclerView.LayoutManager? = null
+    private var adapter: RecyclerView.Adapter<RecyclerAdapter.ViewHolder>? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -40,6 +45,12 @@ class MainActivity : AppCompatActivity() {
                 .setAction("Action", View.OnClickListener { null }).show()
         }
 
+        layoutManager = LinearLayoutManager(this)
+        recycler_view.layoutManager = layoutManager
+
+        adapter = RecyclerAdapter()
+        recycler_view.adapter = adapter
+
         val currentUser = FirebaseAuth.getInstance().currentUser
         if(currentUser == null){
             showLoginFlow()
@@ -48,12 +59,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun showLoginFlow(){
         val i = Intent(this, LoginActivity::class.java)
-        startActivity(i)
-        finish()
-    }
-
-    private fun launchPoll() {
-        val i = Intent(this, PollActivity::class.java)
         startActivity(i)
         finish()
     }
