@@ -9,4 +9,14 @@
         android:name="xyz.willnwalker.sendit.BlankFragment"
         android:label="fragment_blank"
         tools:layout="@layout/fragment_blank" />
+    <fragment
+        android:id="@+id/studentDashboardFragment"
+        android:name="xyz.willnwalker.sendit.StudentDashboardFragment"
+        android:label="fragment_student_dashboard"
+        tools:layout="@layout/fragment_student_dashboard" />
+    <fragment
+        android:id="@+id/teacherDashboardFragment"
+        android:name="xyz.willnwalker.sendit.TeacherDashboardFragment"
+        android:label="fragment_teacher_dashboard"
+        tools:layout="@layout/fragment_teacher_dashboard" />
 </navigation>

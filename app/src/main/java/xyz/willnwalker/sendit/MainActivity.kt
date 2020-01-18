@@ -8,12 +8,14 @@ import android.view.View
 import android.widget.Button
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -32,12 +34,20 @@ class MainActivity : AppCompatActivity() {
             .requestIdToken(getString(R.string.default_web_client_id))
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(this, mGoogleSignInOptions)
-        mGoogleSignInClient.signOut() // Make sure there isn't a user currently signed in, just in case
+//        mGoogleSignInClient.signOut() // Make sure there isn't a user currently signed in, just in case
         mFirebaseAuth = FirebaseAuth.getInstance()
 
         val currentUser = FirebaseAuth.getInstance().currentUser
         if(currentUser == null){
             showLoginFlow()
+        }
+        else{
+            val firestore = FirebaseFirestore.getInstance()
+            val userRef = firestore.collection("users").document(currentUser.uid)
+            userRef.get().addOnSuccessListener {documentSnapshot ->
+                val user = documentSnapshot.toObject(User::class.java)
+                showDashboard(user!!)
+            }
         }
     }
 
@@ -47,11 +57,13 @@ class MainActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun logoutFlow() {
-//        mFirebaseAuth.currentUser!!.delete()
-        mFirebaseAuth.signOut()
-        mGoogleSignInClient.signOut()
-        showLoginFlow()
+    private fun showDashboard(user: User){
+        val nav = findNavController(R.id.nav_host_fragment)
+        when(user.userType){
+            UserType.Student -> nav.navigate(R.id.studentDashboardFragment)
+            UserType.Instructor -> nav.navigate(R.id.teacherDashboardFragment)
+            else -> nav.navigate(R.id.blankFragment)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

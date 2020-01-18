@@ -91,11 +91,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                                 title(text = "Are you a Student or an Instructor?")
                                 listItemsSingleChoice(items = userTypes){
                                         _, index, _ ->
-                                    val user = hashMapOf(
-                                        "uid" to userId,
-                                        "userType" to userTypes[index]
-                                    )
-                                    users.add(user)
+                                    val user = User(userId, UserType.values()[index])
+                                    users.document(userId).set(user)
                                         .addOnSuccessListener { launchDashboard() }
                                         .addOnFailureListener { MaterialDialog(this@LoginActivity).show {
                                             title(text = "Failed to create new account")
