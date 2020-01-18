@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "1011510806265",
+    "firebase_url": "https://sendit-2ec0a.firebaseio.com",
+    "project_id": "sendit-2ec0a",
+    "storage_bucket": "sendit-2ec0a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1011510806265:android:7f7e53022affff43",
+        "android_client_info": {
+          "package_name": "xyz.willnwalker.sendit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1011510806265-0qpcl93gg6m22uksmbsphhr5nfmibbu1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "xyz.willnwalker.sendit",
+            "certificate_hash": "8801fda05fa456a49cdc4ac1250a48d76ef0b387"
+          }
+        },
+        {
+          "client_id": "1011510806265-ortko4mmhl3uhuusqj9laudbilulk684.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "xyz.willnwalker.sendit",
+            "certificate_hash": "011fad074f321f4e9d3e0d6ba70738d32493b2ea"
+          }
+        },
+        {
+          "client_id": "1011510806265-33619ekun2pfra3ru1mb2hoik391i9t4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyClcVGrcv9BGSOwvBnIINH5aqOTyxM9nnU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1011510806265-rvu8c157i0u3voubsl0ir5t4jrgordek.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
