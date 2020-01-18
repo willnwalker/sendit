@@ -86,7 +86,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                         if(task.result!!.additionalUserInfo!!.isNewUser){
                             val userId = task.result!!.user!!.uid
                             val users = mFirestoreDatabase.collection("users")
-                            val userTypes = listOf("Student", "Instructor", "Both")
+                            val userTypes = listOf("Student", "Instructor")
                             MaterialDialog(this).show {
                                 title(text = "Are you a Student or an Instructor?")
                                 listItemsSingleChoice(items = userTypes){

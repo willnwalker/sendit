@@ -7,16 +7,16 @@
     <fragment
         android:id="@+id/blankFragment"
         android:name="xyz.willnwalker.sendit.BlankFragment"
-        android:label="fragment_blank"
+        android:label="SendIt"
         tools:layout="@layout/fragment_blank" />
     <fragment
         android:id="@+id/studentDashboardFragment"
         android:name="xyz.willnwalker.sendit.StudentDashboardFragment"
-        android:label="fragment_student_dashboard"
+        android:label="Student Dashboard - Courses"
         tools:layout="@layout/fragment_student_dashboard" />
     <fragment
         android:id="@+id/teacherDashboardFragment"
         android:name="xyz.willnwalker.sendit.TeacherDashboardFragment"
-        android:label="fragment_teacher_dashboard"
+        android:label="Teacher Dashboard - Courses"
         tools:layout="@layout/fragment_teacher_dashboard" />
 </navigation>
