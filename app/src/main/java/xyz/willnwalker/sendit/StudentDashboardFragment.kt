@@ -3,10 +3,13 @@ package xyz.willnwalker.sendit
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.postDelayed
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -44,9 +47,16 @@ class StudentDashboardFragment : Fragment() {
         studentClassRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         studentClassRecyclerView.showShimmerAdapter()
 
-        sharedViewModel.userRef.get().addOnSuccessListener {documentSnapshot ->
-            val user = documentSnapshot.toObject(User::class.java)
-            loadCourseList(user!!)
+        sharedViewModel.userRef.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
+            if (firebaseFirestoreException != null) {
+                Log.e("xyz.willnwalker.sendit", "Listen failed.", firebaseFirestoreException)
+                return@addSnapshotListener
+            }
+
+            if (documentSnapshot != null && documentSnapshot.exists()) {
+                val user = documentSnapshot.toObject(User::class.java)
+                loadCourseList(user!!)
+            }
         }
     }
 
@@ -57,8 +67,11 @@ class StudentDashboardFragment : Fragment() {
             .setLifecycleOwner(viewLifecycleOwner)
             .build()
         val adapter = DashboardListAdapter(options)
-        studentClassRecyclerView.adapter = adapter
-        studentClassRecyclerView.hideShimmerAdapter()
-        adapter.notifyDataSetChanged()
+        studentClassRecyclerView.showShimmerAdapter()
+        Handler().postDelayed(2000) {
+            studentClassRecyclerView.adapter = adapter
+            studentClassRecyclerView.hideShimmerAdapter()
+            adapter.notifyDataSetChanged()
+        }
     }
 }

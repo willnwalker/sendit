@@ -2,7 +2,6 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="#FFF"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -23,7 +22,7 @@
         app:shimmer_demo_child_count="10"
         app:shimmer_demo_layout="@layout/card_layout"
         app:shimmer_demo_layout_manager_type="linear_vertical"
-        app:shimmer_demo_angle="20"
+        app:shimmer_demo_angle="15"
         />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
