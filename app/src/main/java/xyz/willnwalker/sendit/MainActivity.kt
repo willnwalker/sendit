@@ -1,6 +1,6 @@
 package xyz.willnwalker.sendit
 
-import android.Manifest
+
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -21,29 +21,17 @@ import kotlinx.android.synthetic.main.activity_main.*
 import xyz.willnwalker.sendit.models.SharedViewModel
 import xyz.willnwalker.sendit.models.User
 import xyz.willnwalker.sendit.models.UserType
-import androidx.core.app.ComponentActivity.ExtraData
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-import android.widget.Toast
-import io.radar.sdk.Radar
-import io.radar.sdk.RadarTrackingOptions
-import java.util.*
 
-
-class MainActivity : AppCompatActivity(),
-    RecyclerAdapter.OnSelectedListener{
-
+class MainActivity : AppCompatActivity() {
     private lateinit var mGoogleSignInOptions: GoogleSignInOptions
     private lateinit var mGoogleSignInClient: GoogleSignInClient
     private lateinit var sharedViewModel: SharedViewModel
 
 
-    val requestCode = 99
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-        checkLocationPermission()
 
         val appBarConfig = AppBarConfiguration.Builder(R.id.studentDashboardFragment, R.id.teacherDashboardFragment).build()
         NavigationUI.setupActionBarWithNavController(this, findNavController(R.id.nav_host_fragment), appBarConfig)
@@ -69,21 +57,6 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-        startActivity(intent)
-    }
-    public override fun onStart() {
-        super.onStart()
-        adapter.setQuery(query)
-        // Start listening for Firestore updates
-        adapter.startListening()
-    }
-
-    public override fun onStop() {
-        super.onStop()
-        adapter.stopListening()
-    }
-
-
     private fun showLoginFlow(){
         val i = Intent(this, LoginActivity::class.java)
         startActivity(i)
@@ -102,9 +75,6 @@ class MainActivity : AppCompatActivity(),
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main, menu)
         return true
-    }
-    private fun checkLocationPermission() {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION), requestCode)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

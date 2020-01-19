@@ -3,16 +3,20 @@ package xyz.willnwalker.sendit
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.postDelayed
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.fragment_student_dashboard.*
+import kotlinx.coroutines.withTimeout
+import okio.Timeout
 import xyz.willnwalker.sendit.adapters.DashboardListAdapter
 import xyz.willnwalker.sendit.models.Course
 import xyz.willnwalker.sendit.models.SharedViewModel
@@ -51,14 +55,24 @@ class StudentDashboardFragment : Fragment() {
     }
 
     private fun loadCourseList(user: User){
-        val query: Query = sharedViewModel.firestoreDatabase.collection("courses").whereIn("courseId", user.enrolledCourses!!.toList())
+//        println("user: " + user)
+
+        var enrolled : ArrayList<String>? = null
+        if (!user.enrolledCourses!!.isEmpty()) {
+           enrolled = user.enrolledCourses
+        } else {
+            enrolled = arrayListOf("Nothing")
+        }
+        val query: Query = sharedViewModel.firestoreDatabase.collection("courses").whereIn("courseId", enrolled!!.toList())
         val options: FirestoreRecyclerOptions<Course> = FirestoreRecyclerOptions.Builder<Course>()
             .setQuery(query, Course::class.java)
             .setLifecycleOwner(viewLifecycleOwner)
             .build()
-        val adapter = DashboardListAdapter(options)
-        studentClassRecyclerView.adapter = adapter
-        studentClassRecyclerView.hideShimmerAdapter()
-        adapter.notifyDataSetChanged()
+        Handler().postDelayed(2000) {
+            val adapter = DashboardListAdapter(options)
+            studentClassRecyclerView.adapter = adapter
+            studentClassRecyclerView.hideShimmerAdapter()
+            adapter.notifyDataSetChanged()
+        }
     }
 }
