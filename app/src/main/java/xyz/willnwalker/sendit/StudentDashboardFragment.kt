@@ -13,7 +13,6 @@ import androidx.core.os.postDelayed
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.fragment_student_dashboard.*
 import xyz.willnwalker.sendit.adapters.DashboardListAdapter
@@ -44,8 +43,8 @@ class StudentDashboardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        studentClassRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        studentClassRecyclerView.showShimmerAdapter()
+        studentCourseRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        studentCourseRecyclerView.showShimmerAdapter()
 
         sharedViewModel.userRef.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
             if (firebaseFirestoreException != null) {
@@ -61,16 +60,23 @@ class StudentDashboardFragment : Fragment() {
     }
 
     private fun loadCourseList(user: User){
-        val query: Query = sharedViewModel.firestoreDatabase.collection("courses").whereIn("courseId", user.enrolledCourses!!.toList())
+        val courseList = sharedViewModel.firestoreDatabase.collection("courses")
+        val userEnrollmentList = user.enrolledCourses!!.toList()
+        val query: Query = if(userEnrollmentList.isEmpty()){
+            courseList.whereEqualTo("courseId", "lprWhSdQCUY6OhbPnbzk")
+        }
+        else{
+            courseList.whereIn("courseId", userEnrollmentList)
+        }
         val options: FirestoreRecyclerOptions<Course> = FirestoreRecyclerOptions.Builder<Course>()
             .setQuery(query, Course::class.java)
             .setLifecycleOwner(viewLifecycleOwner)
             .build()
         val adapter = DashboardListAdapter(options)
-        studentClassRecyclerView.showShimmerAdapter()
+        studentCourseRecyclerView.showShimmerAdapter()
         Handler().postDelayed(2000) {
-            studentClassRecyclerView.adapter = adapter
-            studentClassRecyclerView.hideShimmerAdapter()
+            studentCourseRecyclerView.adapter = adapter
+            studentCourseRecyclerView.hideShimmerAdapter()
             adapter.notifyDataSetChanged()
         }
     }
