@@ -6,11 +6,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/tools"
     card_view:cardCornerRadius="10dp"
-    app:cardBackgroundColor="#ACACAC"
     android:layout_marginBottom="25px"
     card_view:cardElevation="5dp"
     app:contentPadding="10dp"
     app:contentPaddingRight="50px"
+    android:layout_marginLeft="@dimen/mtrl_card_spacing"
+    android:layout_marginTop="@dimen/mtrl_card_spacing"
+    android:layout_marginRight="@dimen/mtrl_card_spacing"
     card_view:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -20,15 +22,27 @@
 
         <TextView
             android:id="@+id/className"
-            android:layout_width="180dp"
+            android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="#F44336"
+            android:textColor="@color/colorPrimary"
             android:textSize="36sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/instructorName"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/colorPrimary"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/className" />
 
         <Button
             android:id="@+id/button2"

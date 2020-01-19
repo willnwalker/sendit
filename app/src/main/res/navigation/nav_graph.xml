@@ -15,8 +15,17 @@
         android:label="Student Dashboard - Courses"
         tools:layout="@layout/fragment_student_dashboard" />
     <fragment
-        android:id="@+id/teacherDashboardFragment"
-        android:name="xyz.willnwalker.sendit.TeacherDashboardFragment"
-        android:label="Teacher Dashboard - Courses"
-        tools:layout="@layout/fragment_teacher_dashboard" />
+        android:id="@+id/instructorDashboardFragment"
+        android:name="xyz.willnwalker.sendit.InstructorDashboardFragment"
+        android:label="Instructor Dashboard - Courses"
+        tools:layout="@layout/fragment_instructor_dashboard">
+        <action
+            android:id="@+id/action_teacherDashboardFragment_to_createCourseFragment"
+            app:destination="@id/createCourseFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createCourseFragment"
+        android:name="xyz.willnwalker.sendit.CreateCourseFragment"
+        android:label="Create Course"
+        tools:layout="@layout/fragment_create_course" />
 </navigation>

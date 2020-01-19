@@ -48,6 +48,7 @@ dependencies {
     def dialogs_version = "3.1.1"
     implementation "com.afollestad.material-dialogs:core:$dialogs_version"
     implementation "com.afollestad.material-dialogs:input:$dialogs_version"
+    implementation "com.afollestad.material-dialogs:bottomsheets:$dialogs_version"
     implementation 'androidx.multidex:multidex:2.0.1'
     def nav_version = "2.1.0"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"

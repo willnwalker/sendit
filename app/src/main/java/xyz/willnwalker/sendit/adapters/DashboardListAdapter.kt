@@ -17,7 +17,6 @@ import xyz.willnwalker.sendit.models.Course
 class DashboardListAdapter(options: FirestoreRecyclerOptions<Course>): FirestoreRecyclerAdapter<Course, DashboardListAdapter.CourseHolder>(options) {
     private var context: Context? = null
     override fun onBindViewHolder(holder: CourseHolder, position: Int, course: Course) {
-        Log.d("xyz.willnwalker.sendit", course.name)
         holder.textView.text = course.name
         holder.enterButton.setOnClickListener {
         it ->
@@ -28,6 +27,7 @@ class DashboardListAdapter(options: FirestoreRecyclerOptions<Course>): Firestore
 
             }
         }
+        holder.instructorView.text = "Instructor: ${course.instructorName}"
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseHolder {
@@ -38,6 +38,7 @@ class DashboardListAdapter(options: FirestoreRecyclerOptions<Course>): Firestore
 
     inner class CourseHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         internal var textView: TextView = itemView.findViewById(R.id.className)
+        internal var instructorView: TextView = itemView.findViewById(R.id.instructorName)
         internal var enterButton: Button = itemView.findViewById(R.id.button)
 
     }

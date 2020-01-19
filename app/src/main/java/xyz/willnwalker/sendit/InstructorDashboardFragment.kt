@@ -13,15 +13,10 @@ import androidx.core.os.postDelayed
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.callbacks.onDismiss
-import com.afollestad.materialdialogs.input.input
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
-import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
-import kotlinx.android.synthetic.main.fragment_student_dashboard.*
-import kotlinx.coroutines.withTimeout
-import okio.Timeout
+import kotlinx.android.synthetic.main.fragment_instructor_dashboard.*
 import xyz.willnwalker.sendit.adapters.DashboardListAdapter
 import xyz.willnwalker.sendit.models.Course
 import xyz.willnwalker.sendit.models.SharedViewModel
@@ -30,9 +25,10 @@ import xyz.willnwalker.sendit.models.User
 /**
  * A simple [Fragment] subclass.
  */
-class StudentDashboardFragment : Fragment() {
+class InstructorDashboardFragment : Fragment() {
 
     private lateinit var sharedViewModel: SharedViewModel
+    private lateinit var enrollmentListener: ListenerRegistration
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -44,26 +40,20 @@ class StudentDashboardFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_student_dashboard, container, false)
+        return inflater.inflate(R.layout.fragment_instructor_dashboard, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         fab.setOnClickListener {
-            MaterialDialog(requireActivity()).show {
-                title(text = "Enter your course enrollment code below:")
-                input { _, text ->
-                    attemptEnrollment(text.toString())
-                }
-                positiveButton(text = "Enroll")
-            }
+            findNavController().navigate(R.id.createCourseFragment)
         }
 
-        studentCourseRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        studentCourseRecyclerView.showShimmerAdapter()
+        teacherCourseRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        teacherCourseRecyclerView.showShimmerAdapter()
 
-        sharedViewModel.userRef.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
+        enrollmentListener = sharedViewModel.userRef.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
             if (firebaseFirestoreException != null) {
                 Log.e("xyz.willnwalker.sendit", "Listen failed.", firebaseFirestoreException)
                 return@addSnapshotListener
@@ -74,6 +64,11 @@ class StudentDashboardFragment : Fragment() {
                 loadCourseList(user!!)
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        enrollmentListener.remove()
     }
 
     private fun loadCourseList(user: User){
@@ -90,34 +85,11 @@ class StudentDashboardFragment : Fragment() {
             .setLifecycleOwner(viewLifecycleOwner)
             .build()
         val adapter = DashboardListAdapter(options)
-        studentCourseRecyclerView.showShimmerAdapter()
+        teacherCourseRecyclerView.showShimmerAdapter()
         Handler().postDelayed(2000) {
-            studentCourseRecyclerView.adapter = adapter
-            studentCourseRecyclerView.hideShimmerAdapter()
+            teacherCourseRecyclerView.adapter = adapter
+            teacherCourseRecyclerView.hideShimmerAdapter()
             adapter.notifyDataSetChanged()
-        }
-    }
-
-    private fun attemptEnrollment(text: String){
-        val course = sharedViewModel.firestoreDatabase.collection("courses").whereEqualTo("enrollmentCode", text).limit(1)
-        course.get().addOnCompleteListener { courseSnapshot ->
-            if(courseSnapshot.result!!.isEmpty){
-                MaterialDialog(requireActivity()).show {
-                    title(text = "Error")
-                    message(text = "Failed to enroll in course.")
-                    positiveButton(text = "Okay")
-                }
-            }
-            else{
-                val courseId = courseSnapshot.result!!.documents[0].id
-                val courseName = courseSnapshot.result!!.documents[0].get("name")
-                sharedViewModel.userRef.update("enrolledCourses", FieldValue.arrayUnion(courseId))
-                MaterialDialog(requireActivity()).show {
-                    title(text = "Success!")
-                    message(text = "You've successfully enrolled in $courseName!")
-                    positiveButton(text = "Okay")
-                }
-            }
         }
     }
 }

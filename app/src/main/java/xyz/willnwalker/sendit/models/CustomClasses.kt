@@ -12,6 +12,7 @@ data class User(
 )
 
 data class Course(
+    val courseId: String? = null,
     val name: String? = null,
     val instructorName: String? = null,
     val instructorUid: String? = null,

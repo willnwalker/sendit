@@ -77,10 +77,10 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun firebaseAuthWithGoogle(account: GoogleSignInAccount) {
-        if (!account.email!!.endsWith("ucsc.edu")) {
-            mGoogleSignInClient.signOut()
-            showSnackbar("Please log in with your ucsc.edu email.")
-        } else {
+//        if (!account.email!!.endsWith("ucsc.edu")) {
+//            mGoogleSignInClient.signOut()
+//            showSnackbar("Please log in with your ucsc.edu email.")
+//        } else {
             val credential = GoogleAuthProvider.getCredential(account.idToken, null)
             mFirebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this) { task ->
@@ -124,7 +124,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                     }
                 }
         }
-    }
+//    }
 
     private fun launchDashboard() {
         val i = Intent(this, MainActivity::class.java)

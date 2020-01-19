@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         checkLocationPermission()
-        val appBarConfig = AppBarConfiguration.Builder(R.id.studentDashboardFragment, R.id.teacherDashboardFragment).build()
+        val appBarConfig = AppBarConfiguration.Builder(R.id.studentDashboardFragment, R.id.instructorDashboardFragment).build()
         NavigationUI.setupActionBarWithNavController(this, findNavController(R.id.nav_host_fragment), appBarConfig)
 
 
@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
         val nav = findNavController(R.id.nav_host_fragment)
         when(user.userType){
             UserType.Student -> nav.navigate(R.id.studentDashboardFragment)
-            UserType.Instructor -> nav.navigate(R.id.teacherDashboardFragment)
+            UserType.Instructor -> nav.navigate(R.id.instructorDashboardFragment)
             else -> nav.navigate(R.id.blankFragment)
         }
     }
