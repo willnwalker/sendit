@@ -22,6 +22,8 @@ import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.google.android.gms.tasks.RuntimeExecutionException
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_login.*
+import xyz.willnwalker.sendit.models.User
+import xyz.willnwalker.sendit.models.UserType
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -91,7 +93,12 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                                 title(text = "Are you a Student or an Instructor?")
                                 listItemsSingleChoice(items = userTypes){
                                         _, index, _ ->
-                                    val user = User(userId, UserType.values()[index])
+                                    val user =
+                                        User(
+                                            userId,
+                                            UserType.values()[index],
+                                            ArrayList()
+                                        )
                                     users.document(userId).set(user)
                                         .addOnSuccessListener { launchDashboard() }
                                         .addOnFailureListener { MaterialDialog(this@LoginActivity).show {

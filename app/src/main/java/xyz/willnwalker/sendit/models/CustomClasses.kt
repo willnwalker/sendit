@@ -1,4 +1,4 @@
-package xyz.willnwalker.sendit
+package xyz.willnwalker.sendit.models
 
 enum class UserType{
     Student,
@@ -7,7 +7,8 @@ enum class UserType{
 
 data class User(
     val uid: String? = null,
-    val userType: UserType? = null
+    val userType: UserType? = null,
+    val enrolledCourses: ArrayList<String>? = null
 )
 
 data class Course(
