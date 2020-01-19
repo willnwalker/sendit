@@ -28,4 +28,10 @@
         android:name="xyz.willnwalker.sendit.CreateCourseFragment"
         android:label="Create Course"
         tools:layout="@layout/fragment_create_course" />
+    <fragment
+        android:id="@+id/PollCreationFragment"
+        android:name="xyz.willnwalker.sendit.PollCreationFragment"
+        android:label="Create Poll"
+        tools:layout="@layout/fragment_instructor_polling" />
+
 </navigation>

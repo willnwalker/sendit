@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -16,6 +17,7 @@ import xyz.willnwalker.sendit.models.Course
 
 class DashboardListAdapter(options: FirestoreRecyclerOptions<Course>): FirestoreRecyclerAdapter<Course, DashboardListAdapter.CourseHolder>(options) {
     private var context: Context? = null
+    private var view: View? = null
     override fun onBindViewHolder(holder: CourseHolder, position: Int, course: Course) {
         holder.textView.text = course.name
         holder.enterButton.setOnClickListener {
@@ -24,8 +26,9 @@ class DashboardListAdapter(options: FirestoreRecyclerOptions<Course>): Firestore
                 // do something with status, location, events, user
                 val obj = user?.geofences
                 println(location)
-
             }
+            view!!.findNavController().navigate(R.id.PollCreationFragment)
+
         }
         holder.instructorView.text = "Instructor: ${course.instructorName}"
     }
@@ -33,6 +36,7 @@ class DashboardListAdapter(options: FirestoreRecyclerOptions<Course>): Firestore
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseHolder {
         val courseView = LayoutInflater.from(parent.context).inflate(R.layout.card_layout, parent, false)
         context = parent.context
+        view = parent
         return CourseHolder(courseView)
     }
 
