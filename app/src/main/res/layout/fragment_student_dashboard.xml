@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="#FFF"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="MainActivity">
+
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:id="@+id/studentClassRecyclerView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_alignParentStart="true"-->
+<!--        android:layout_alignParentTop="true"-->
+<!--        android:visibility="visible" />-->
+
+    <com.mikelau.views.shimmer.ShimmerRecyclerViewX
+        android:id="@+id/studentClassRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:shimmer_demo_child_count="10"
+        app:shimmer_demo_layout="@layout/card_layout"
+        app:shimmer_demo_layout_manager_type="linear_vertical"
+        app:shimmer_demo_angle="20"
+        />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:tint="@android:color/white"
+        app:srcCompat="@drawable/ic_add_black_24dp" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

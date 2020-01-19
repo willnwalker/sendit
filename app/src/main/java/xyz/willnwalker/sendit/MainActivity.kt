@@ -3,24 +3,24 @@ package xyz.willnwalker.sendit
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.Button
-import com.google.android.material.snackbar.Snackbar
+import android.view.Menu
+import android.view.MenuItem
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.Query
 
 import kotlinx.android.synthetic.main.activity_main.*
-import xyz.willnwalker.sendit.adapters.RecyclerAdapter
+import xyz.willnwalker.sendit.models.SharedViewModel
+import xyz.willnwalker.sendit.models.User
+import xyz.willnwalker.sendit.models.UserType
 import androidx.core.app.ComponentActivity.ExtraData
 import androidx.core.content.ContextCompat.getSystemService
 import android.icu.lang.UCharacter.GraphemeClusterBreak.T
@@ -35,87 +35,40 @@ class MainActivity : AppCompatActivity(),
 
     private lateinit var mGoogleSignInOptions: GoogleSignInOptions
     private lateinit var mGoogleSignInClient: GoogleSignInClient
-    private lateinit var mFirebaseAuth: FirebaseAuth
-    lateinit var query: Query
-    lateinit var firestore: FirebaseFirestore
+    private lateinit var sharedViewModel: SharedViewModel
+
+
     val requestCode = 99
-    private var layoutManager: RecyclerView.LayoutManager? = null
-    lateinit var adapter: RecyclerAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         checkLocationPermission()
 
+        val appBarConfig = AppBarConfiguration.Builder(R.id.studentDashboardFragment, R.id.teacherDashboardFragment).build()
+        NavigationUI.setupActionBarWithNavController(this, findNavController(R.id.nav_host_fragment), appBarConfig)
+
+
         mGoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
             .requestIdToken(getString(R.string.default_web_client_id))
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(this, mGoogleSignInOptions)
-        mGoogleSignInClient.signOut() // Make sure there isn't a user currently signed in, just in case
-        mFirebaseAuth = FirebaseAuth.getInstance()
-
-        val logout_btn = findViewById(R.id.toolbarbtn) as Button
-        logout_btn.setOnClickListener {
-            logoutFlow()
-        }
-
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", View.OnClickListener { null }).show()
-        }
-
-        layoutManager = LinearLayoutManager(this)
-        recycler_view.layoutManager = layoutManager
-
-
-        FirebaseFirestore.setLoggingEnabled(true)
-
-        // Firestore
-        firestore = FirebaseFirestore.getInstance()
-
-        // Get ${LIMIT} restaurants
-        query = firestore.collection("classes")
-            .orderBy("Instructor", Query.Direction.DESCENDING)
-
-
-
-        adapter = object : RecyclerAdapter(query, this@MainActivity) {
-            override fun onDataChanged() {
-                // Show/hide content if the query returns empty.
-                if (itemCount == 0) {
-                    recycler_view.visibility = View.GONE
-                } else {
-                    recycler_view.visibility = View.VISIBLE
-                }
-            }
-
-            override fun onError(e: FirebaseFirestoreException) {
-                // Show a snackbar on errors
-                Snackbar.make(findViewById(android.R.id.content),
-                    "Error: check logs for info.", Snackbar.LENGTH_LONG).show()
-            }
-        }
-
-        recycler_view.adapter = adapter
+//        mGoogleSignInClient.signOut() // Make sure there isn't a user currently signed in, just in case
 
         val currentUser = FirebaseAuth.getInstance().currentUser
         if(currentUser == null){
             showLoginFlow()
         }
-    }
-    override fun onSelected(selected: DocumentSnapshot) {
-        // Go to the details page for the selected restaurant
-        val intent = Intent(this, PollActivity::class.java)
-
-        Radar.trackOnce { status, location, events, user ->
-            // do something with status, location, events, user
-            val obj = user?.geofences
-            obj?.forEach {
-                Toast.makeText(this,"${it.description}", Toast.LENGTH_LONG).show()
+        else{
+            sharedViewModel = ViewModelProviders.of(this).get(SharedViewModel::class.java)
+            sharedViewModel.userRef.get().addOnSuccessListener {documentSnapshot ->
+                val user = documentSnapshot.toObject(User::class.java)
+                showDashboard(user!!)
             }
-
         }
+    }
+
         startActivity(intent)
     }
     public override fun onStart() {
@@ -137,16 +90,31 @@ class MainActivity : AppCompatActivity(),
         finish()
     }
 
-    private fun logoutFlow() {
-//        mFirebaseAuth.currentUser!!.delete()
-        mFirebaseAuth.signOut()
-        mGoogleSignInClient.signOut()
-        showLoginFlow()
+    private fun showDashboard(user: User){
+        val nav = findNavController(R.id.nav_host_fragment)
+        when(user.userType){
+            UserType.Student -> nav.navigate(R.id.studentDashboardFragment)
+            UserType.Instructor -> nav.navigate(R.id.teacherDashboardFragment)
+            else -> nav.navigate(R.id.blankFragment)
+        }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main, menu)
+        return true
+    }
     private fun checkLocationPermission() {
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION), requestCode)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_logout -> {
+                FirebaseAuth.getInstance().signOut()
+                showLoginFlow()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
 }

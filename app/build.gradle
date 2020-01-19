@@ -6,6 +6,11 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'com.google.gms.google-services'
 
+apply plugin: "androidx.navigation.safeargs.kotlin"
+
+apply plugin: 'kotlin-kapt'
+
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
@@ -17,6 +22,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -42,7 +48,19 @@ dependencies {
     def dialogs_version = "3.1.1"
     implementation "com.afollestad.material-dialogs:core:$dialogs_version"
     implementation "com.afollestad.material-dialogs:input:$dialogs_version"
-    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'androidx.multidex:multidex:2.0.1'
+    def nav_version = "2.1.0"
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.firebaseui:firebase-ui-firestore:6.2.0'
+    def lifecycle_version = "2.1.0"
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
+    implementation 'com.github.mike14u:shimmer-recyclerview-x:1.0.3'
+
+
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

@@ -22,6 +22,8 @@ import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.google.android.gms.tasks.RuntimeExecutionException
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_login.*
+import xyz.willnwalker.sendit.models.User
+import xyz.willnwalker.sendit.models.UserType
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -86,16 +88,18 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                         if(task.result!!.additionalUserInfo!!.isNewUser){
                             val userId = task.result!!.user!!.uid
                             val users = mFirestoreDatabase.collection("users")
-                            val userTypes = listOf("Student", "Instructor", "Both")
+                            val userTypes = listOf("Student", "Instructor")
                             MaterialDialog(this).show {
                                 title(text = "Are you a Student or an Instructor?")
                                 listItemsSingleChoice(items = userTypes){
                                         _, index, _ ->
-                                    val user = hashMapOf(
-                                        "uid" to userId,
-                                        "userType" to userTypes[index]
-                                    )
-                                    users.add(user)
+                                    val user =
+                                        User(
+                                            userId,
+                                            UserType.values()[index],
+                                            ArrayList()
+                                        )
+                                    users.document(userId).set(user)
                                         .addOnSuccessListener { launchDashboard() }
                                         .addOnFailureListener { MaterialDialog(this@LoginActivity).show {
                                             title(text = "Failed to create new account")
