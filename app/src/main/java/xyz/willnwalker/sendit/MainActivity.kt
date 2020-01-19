@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
@@ -14,7 +13,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 
 import kotlinx.android.synthetic.main.activity_main.*
 import xyz.willnwalker.sendit.models.SharedViewModel
@@ -32,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        val appBarConfig = AppBarConfiguration.Builder(R.id.studentDashboardFragment, R.id.teacherDashboardFragment).build()
+        val appBarConfig = AppBarConfiguration.Builder(R.id.studentDashboardFragment, R.id.instructorDashboardFragment).build()
         NavigationUI.setupActionBarWithNavController(this, findNavController(R.id.nav_host_fragment), appBarConfig)
 
 
@@ -66,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         val nav = findNavController(R.id.nav_host_fragment)
         when(user.userType){
             UserType.Student -> nav.navigate(R.id.studentDashboardFragment)
-            UserType.Instructor -> nav.navigate(R.id.teacherDashboardFragment)
+            UserType.Instructor -> nav.navigate(R.id.instructorDashboardFragment)
             else -> nav.navigate(R.id.blankFragment)
         }
     }

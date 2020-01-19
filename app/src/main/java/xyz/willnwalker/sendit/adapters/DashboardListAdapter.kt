@@ -1,6 +1,5 @@
 package xyz.willnwalker.sendit.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +13,8 @@ import xyz.willnwalker.sendit.models.Course
 class DashboardListAdapter(options: FirestoreRecyclerOptions<Course>): FirestoreRecyclerAdapter<Course, DashboardListAdapter.CourseHolder>(options) {
 
     override fun onBindViewHolder(holder: CourseHolder, position: Int, course: Course) {
-        Log.d("xyz.willnwalker.sendit", course.name)
         holder.textView.text = course.name
+        holder.instructorView.text = "Instructor: ${course.instructorName}"
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseHolder {
@@ -25,6 +24,7 @@ class DashboardListAdapter(options: FirestoreRecyclerOptions<Course>): Firestore
 
     inner class CourseHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         internal var textView: TextView = itemView.findViewById(R.id.className)
+        internal var instructorView: TextView = itemView.findViewById(R.id.instructorName)
     }
 
 }

@@ -11,8 +11,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.postDelayed
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.callbacks.onDismiss
+import com.afollestad.materialdialogs.input.input
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.fragment_student_dashboard.*
 import xyz.willnwalker.sendit.adapters.DashboardListAdapter
@@ -42,6 +47,16 @@ class StudentDashboardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        fab.setOnClickListener {
+            MaterialDialog(requireActivity()).show {
+                title(text = "Enter your course enrollment code below:")
+                input { _, text ->
+                    attemptEnrollment(text.toString())
+                }
+                positiveButton(text = "Enroll")
+            }
+        }
 
         studentCourseRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         studentCourseRecyclerView.showShimmerAdapter()
@@ -78,6 +93,29 @@ class StudentDashboardFragment : Fragment() {
             studentCourseRecyclerView.adapter = adapter
             studentCourseRecyclerView.hideShimmerAdapter()
             adapter.notifyDataSetChanged()
+        }
+    }
+
+    private fun attemptEnrollment(text: String){
+        val course = sharedViewModel.firestoreDatabase.collection("courses").whereEqualTo("enrollmentCode", text).limit(1)
+        course.get().addOnCompleteListener { courseSnapshot ->
+            if(courseSnapshot.result!!.isEmpty){
+                MaterialDialog(requireActivity()).show {
+                    title(text = "Error")
+                    message(text = "Failed to enroll in course.")
+                    positiveButton(text = "Okay")
+                }
+            }
+            else{
+                val courseId = courseSnapshot.result!!.documents[0].id
+                val courseName = courseSnapshot.result!!.documents[0].get("name")
+                sharedViewModel.userRef.update("enrolledCourses", FieldValue.arrayUnion(courseId))
+                MaterialDialog(requireActivity()).show {
+                    title(text = "Success!")
+                    message(text = "You've successfully enrolled in $courseName!")
+                    positiveButton(text = "Okay")
+                }
+            }
         }
     }
 }

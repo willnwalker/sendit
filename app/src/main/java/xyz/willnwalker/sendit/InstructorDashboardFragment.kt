@@ -11,10 +11,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.postDelayed
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
-import kotlinx.android.synthetic.main.fragment_teacher_dashboard.*
+import kotlinx.android.synthetic.main.fragment_instructor_dashboard.*
 import xyz.willnwalker.sendit.adapters.DashboardListAdapter
 import xyz.willnwalker.sendit.models.Course
 import xyz.willnwalker.sendit.models.SharedViewModel
@@ -23,9 +25,10 @@ import xyz.willnwalker.sendit.models.User
 /**
  * A simple [Fragment] subclass.
  */
-class TeacherDashboardFragment : Fragment() {
+class InstructorDashboardFragment : Fragment() {
 
     private lateinit var sharedViewModel: SharedViewModel
+    private lateinit var enrollmentListener: ListenerRegistration
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -37,20 +40,20 @@ class TeacherDashboardFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_teacher_dashboard, container, false)
+        return inflater.inflate(R.layout.fragment_instructor_dashboard, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         fab.setOnClickListener {
-
+            findNavController().navigate(R.id.createCourseFragment)
         }
 
         teacherCourseRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         teacherCourseRecyclerView.showShimmerAdapter()
 
-        sharedViewModel.userRef.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
+        enrollmentListener = sharedViewModel.userRef.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
             if (firebaseFirestoreException != null) {
                 Log.e("xyz.willnwalker.sendit", "Listen failed.", firebaseFirestoreException)
                 return@addSnapshotListener
@@ -61,6 +64,11 @@ class TeacherDashboardFragment : Fragment() {
                 loadCourseList(user!!)
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        enrollmentListener.remove()
     }
 
     private fun loadCourseList(user: User){
