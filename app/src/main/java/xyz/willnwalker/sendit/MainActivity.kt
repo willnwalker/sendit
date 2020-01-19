@@ -1,12 +1,13 @@
 package xyz.willnwalker.sendit
 
 
+import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -15,7 +16,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 
 import kotlinx.android.synthetic.main.activity_main.*
 import xyz.willnwalker.sendit.models.SharedViewModel
@@ -26,13 +26,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mGoogleSignInOptions: GoogleSignInOptions
     private lateinit var mGoogleSignInClient: GoogleSignInClient
     private lateinit var sharedViewModel: SharedViewModel
-
+    private val requestCode = Math.random().toInt()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-
+        checkLocationPermission()
         val appBarConfig = AppBarConfiguration.Builder(R.id.studentDashboardFragment, R.id.teacherDashboardFragment).build()
         NavigationUI.setupActionBarWithNavController(this, findNavController(R.id.nav_host_fragment), appBarConfig)
 
@@ -87,4 +87,7 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    private fun checkLocationPermission() {
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION), requestCode)
+    }
 }
