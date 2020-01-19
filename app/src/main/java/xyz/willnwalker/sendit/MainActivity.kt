@@ -1,11 +1,13 @@
 package xyz.willnwalker.sendit
 
+import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -19,6 +21,14 @@ import com.google.firebase.firestore.Query
 
 import kotlinx.android.synthetic.main.activity_main.*
 import xyz.willnwalker.sendit.adapters.RecyclerAdapter
+import androidx.core.app.ComponentActivity.ExtraData
+import androidx.core.content.ContextCompat.getSystemService
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.widget.Toast
+import io.radar.sdk.Radar
+import io.radar.sdk.RadarTrackingOptions
+import java.util.*
+
 
 class MainActivity : AppCompatActivity(),
     RecyclerAdapter.OnSelectedListener{
@@ -28,13 +38,14 @@ class MainActivity : AppCompatActivity(),
     private lateinit var mFirebaseAuth: FirebaseAuth
     lateinit var query: Query
     lateinit var firestore: FirebaseFirestore
-
+    val requestCode = 99
     private var layoutManager: RecyclerView.LayoutManager? = null
     lateinit var adapter: RecyclerAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+        checkLocationPermission()
 
         mGoogleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
@@ -97,6 +108,14 @@ class MainActivity : AppCompatActivity(),
         // Go to the details page for the selected restaurant
         val intent = Intent(this, PollActivity::class.java)
 
+        Radar.trackOnce { status, location, events, user ->
+            // do something with status, location, events, user
+            val obj = user?.geofences
+            obj?.forEach {
+                Toast.makeText(this,"${it.description}", Toast.LENGTH_LONG).show()
+            }
+
+        }
         startActivity(intent)
     }
     public override fun onStart() {
@@ -123,6 +142,10 @@ class MainActivity : AppCompatActivity(),
         mFirebaseAuth.signOut()
         mGoogleSignInClient.signOut()
         showLoginFlow()
+    }
+
+    private fun checkLocationPermission() {
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_BACKGROUND_LOCATION), requestCode)
     }
 
 
